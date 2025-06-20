@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPK Ekstrakulikuler - Metode SAW</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            width: 85vw;
+            height: 80vh;
+            max-width: 1100px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            padding: 40px;
+            position: absolute;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: block;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f1f1;
+        }
+
+        .slide-title {
+            font-size: 2.3rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .slide-subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: 400;
+        }
+
+        .content-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .box-title {
+            font-size: 1.3rem;
+            color: #3498db;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .box-title i {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+
+        ul {
+            margin-left: 25px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .highlight {
+            background-color: #ffeaa7;
+            font-weight: 600;
+        }
+
+        .calculation {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: #2c3e50;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .rank {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                width: 95vw;
+                height: 85vh;
+                padding: 20px;
+            }
+            
+            .slide-title {
+                font-size: 1.8rem;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-btn {
+                padding: 10px 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Latar Belakang -->
+        <div class="slide active">
+            <div class="slide-counter">1 / 6</div>
+            <div class="slide-header">
+                <div class="slide-title">Latar Belakang</div>
+                <div class="slide-subtitle">Konteks dan pentingnya sistem ini</div>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-book-open"></i> Permasalahan</div>
+                <ul>
+                    <li>Siswa kesulitan memilih ekstrakulikuler yang sesuai dengan minat dan kemampuan</li>
+                    <li>Kurangnya alat bantu pengambilan keputusan yang objektif</li>
+                    <li>Potensi salah pilih yang berdampak pada motivasi siswa</li>
+                    <li>Banyaknya pilihan ekstrakulikuler membuat bingung</li>
+                </ul>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-lightbulb"></i> Solusi</div>
+                <ul>
+                    <li>Sistem berbasis web dengan metode SAW (Simple Additive Weighting)</li>
+                    <li>Mempertimbangkan 6 kriteria utama</li>
+                    <li>Memberikan rekomendasi terbaik berdasarkan perhitungan matematis</li>
+                    <li>Antarmuka yang mudah digunakan oleh siswa</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #7f8c8d;">
+                <i class="fas fa-arrow-down" style="font-size: 1.5rem;"></i>
+                <p>Scroll untuk melihat lebih banyak konten</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Rumusan Masalah -->
+        <div class="slide">
+            <div class="slide-counter">2 / 6</div>
+            <div class="slide-header">
+                <div class="slide-title">Rumusan Masalah</div>
+                <div class="slide-subtitle">Identifikasi masalah yang ingin dipecahkan</div>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-question-circle"></i> Masalah Utama</div>
+                <ul>
+                    <li>Bagaimana membantu siswa memilih ekstrakulikuler yang optimal?</li>
+                    <li>Kriteria apa saja yang relevan untuk dipertimbangkan?</li>
+                    <li>Bagaimana mengukur preferensi siswa secara objektif?</li>
+                    <li>Bagaimana mengatasi subjektivitas dalam pengambilan keputusan?</li>
+                </ul>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-list-check"></i> Kriteria Penilaian</div>
+                <table>
+                    <tr>
+                        <th>Kriteria</th>
+                        <th>Jenis</th>
+                        <th>Bobot</th>
+                    </tr>
+                    <tr>
+                        <td>Minat</td>
+                        <td>Benefit</td>
+                        <td>20%</td>
+                    </tr>
+                    <tr>
+                        <td>Kemampuan Fisik</td>
+                        <td>Benefit</td>
+                        <td>20%</td>
+                    </tr>
+                    <tr>
+                        <td>Kreativitas</td>
+                        <td>Benefit</td>
+                        <td>16%</td>
+                    </tr>
+                    <tr>
+                        <td>Kedisiplinan</td>
+                        <td>Benefit</td>
+                        <td>12%</td>
+                    </tr>
+                    <tr>
+                        <td>Kerja Sama</td>
+                        <td>Benefit</td>
+                        <td>16%</td>
+                    </tr>
+                    <tr>
+                        <td>Waktu</td>
+                        <td>Benefit</td>
+                        <td>16%</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 3: Tujuan Penelitian -->
+        <div class="slide">
+            <div class="slide-counter">3 / 6</div>
+            <div class="slide-header">
+                <div class="slide-title">Tujuan Penelitian</div>
+                <div class="slide-subtitle">Apa yang ingin dicapai dengan sistem ini</div>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-bullseye"></i> Tujuan Umum</div>
+                <ul>
+                    <li>Membangun sistem pendukung keputusan untuk pemilihan ekstrakulikuler</li>
+                    <li>Mengimplementasikan metode SAW dalam kasus nyata</li>
+                    <li>Memberikan rekomendasi yang objektif dan terukur</li>
+                </ul>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-tasks"></i> Tujuan Khusus</div>
+                <ul>
+                    <li>Mengidentifikasi kriteria penting dalam pemilihan ekstrakulikuler</li>
+                    <li>Menentukan bobot untuk setiap kriteria</li>
+                    <li>Mengembangkan algoritma SAW untuk perhitungan skor</li>
+                    <li>Membuat antarmuka yang mudah digunakan</li>
+                    <li>Menguji akurasi sistem dengan data nyata</li>
+                </ul>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-chart-line"></i> Manfaat</div>
+                <ul>
+                    <li><strong>Bagi Siswa:</strong> Mempermudah proses pengambilan keputusan</li>
+                    <li><strong>Bagi Sekolah:</strong> Meningkatkan efektivitas program ekstrakulikuler</li>
+                    <li><strong>Bagi Peneliti:</strong> Implementasi metode SAW dalam kasus nyata</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 4: Metode SAW -->
+        <div class="slide">
+            <div class="slide-counter">4 / 6</div>
+            <div class="slide-header">
+                <div class="slide-title">Metode SAW</div>
+                <div class="slide-subtitle">Simple Additive Weighting</div>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-cogs"></i> Konsep Dasar</div>
+                <p>Metode pengambilan keputusan multi-kriteria dengan menjumlahkan performa ternormalisasi dari setiap alternatif pada semua kriteria</p>
+                
+                <div class="calculation">
+                    <div class="formula">Skor = Σ (Normalisasi × Bobot)</div>
+                </div>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-list-ol"></i> Langkah-langkah</div>
+                <ol style="margin-left: 25px; line-height: 1.8;">
+                    <li><strong>Normalisasi Matriks:</strong> Membagi nilai dengan nilai maksimum pada kriteria yang sama</li>
+                    <li><strong>Perkalian Bobot:</strong> Mengalikan nilai ternormalisasi dengan bobot kriteria</li>
+                    <li><strong>Penjumlahan Skor:</strong> Menjumlahkan hasil perkalian untuk setiap alternatif</li>
+                    <li><strong>Perankingan:</strong> Mengurutkan alternatif berdasarkan skor tertinggi</li>
+                </ol>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-calculator"></i> Contoh Normalisasi</div>
+                <p>Untuk kriteria benefit:</p>
+                <div class="formula">Normalisasi = Nilai Alternatif / Nilai Maksimum</div>
+                <p style="margin-top: 10px;">Contoh: Minat Sepak Bola = 5/5 = 1.0</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Hasil Perhitungan -->
+        <div class="slide">
+            <div class="slide-counter">5 / 6</div>
+            <div class="slide-header">
+                <div class="slide-title">Hasil Perhitungan</div>
+                <div class="slide-subtitle">Contoh perhitungan dan ranking</div>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-calculator"></i> Contoh Perhitungan Sepak Bola</div>
+                <div class="calculation">
+                    <p>= (Minat × 0.20) + (Kem.Fisik × 0.20) + (Kreativitas × 0.16) + (Kedisiplinan × 0.12) + (Kerjasama × 0.16) + (Waktu × 0.16)</p>
+                    <p>= (1.0×0.20) + (0.8×0.20) + (0.6×0.16) + (1.0×0.12) + (0.8×0.16) + (0.6×0.16)</p>
+                    <p>= 0.20 + 0.16 + 0.096 + 0.12 + 0.128 + 0.096</p>
+                    <div class="formula" style="background: #27ae60; margin-top: 10px;">= 0.80</div>
+                </div>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-trophy"></i> Hasil Ranking</div>
+                <table>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Ekstrakulikuler</th>
+                        <th>Skor</th>
+                    </tr>
+                    <tr class="highlight">
+                        <td>1</td>
+                        <td>Sepak Bola</td>
+                        <td>0.80</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Basket</td>
+                        <td>0.77</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Tenis Meja</td>
+                        <td>0.77</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Voli</td>
+                        <td>0.75</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Tekwondo/Karate</td>
+                        <td>0.74</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Bulutangkis</td>
+                        <td>0.58</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 6: Kesimpulan -->
+        <div class="slide">
+            <div class="slide-counter">6 / 6</div>
+            <div class="slide-header">
+                <div class="slide-title">Kesimpulan</div>
+                <div class="slide-subtitle">Rangkuman dan saran pengembangan</div>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-check-circle"></i> Temuan Utama</div>
+                <ul>
+                    <li>Metode SAW efektif untuk pemilihan ekstrakulikuler</li>
+                    <li>Sepak bola menjadi pilihan terbaik dengan skor 0.80</li>
+                    <li>Sistem berhasil mengeliminasi subjektivitas dalam pemilihan</li>
+                    <li>Kriteria minat dan kedisiplinan paling berpengaruh</li>
+                </ul>
+            </div>
+            
+            <div class="content-box">
+                <div class="box-title"><i class="fas fa-rocket"></i> Saran Pengembangan</div>
+                <ul>
+                    <li>Penambahan lebih banyak kriteria penilaian</li>
+                    <li>Integrasi dengan data akademik siswa</li>
+                    <li>Pengembangan versi mobile aplikasi</li>
+                    <li>Penambahan fitur tracking perkembangan siswa</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <div style="font-size: 1.8rem; color: #2c3e50; font-weight: 600;">Terima Kasih</div>
+                <div style="font-size: 3rem; color: #3498db; margin-top: 10px;">
+                    <i class="fas fa-hands-clapping"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Sebelumnya</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Selanjutnya →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            
+            // Update all counters
+            document.querySelectorAll('.slide-counter').forEach((el, idx) => {
+                el.textContent = `${idx + 1} / ${totalSlides}`;
+            });
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
